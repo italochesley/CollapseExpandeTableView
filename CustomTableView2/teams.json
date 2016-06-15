@@ -1,0 +1,57 @@
+{
+  "Teams": [
+    { 
+      "Name": "Itaú",
+      "Employees": [
+        {
+          "Name": "Rodrigo Goulart",
+          "Role": "Arquiteto"
+        },
+        {
+          "Name": "Ítalo Chesley",
+          "Role": "Desenvolvedor"
+        }
+      ]
+    },
+    { 
+      "Name": "Bradesco",
+      "Employees": [
+        {
+          "Name": "Rafael Lobato",
+          "Role": "Arquiteto"
+        },
+        {
+          "Name": "Bruno Rezende",
+          "Role": "Scrum Master"
+        }
+      ]
+    },
+    { 
+      "Name": "BTG Pactual",
+      "Employees": [
+        {
+          "Name": "Bruno Campos",
+          "Role": "Analista"
+        }
+      ]
+    },
+    { 
+      "Name": "Coca Cola",
+      "Employees": [
+        {
+          "Name": "Pin",
+          "Role": "Desenvolvedor"
+        }
+      ]
+    },
+    { 
+      "Name": "Estácio",
+      "Employees": [
+        {
+          "Name": "Gustavo Gonzaga",
+          "Role": "Arquiteto"
+        }
+      ]
+    }
+  ]
+}
