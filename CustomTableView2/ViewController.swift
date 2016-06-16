@@ -10,13 +10,13 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    // MARK: Vars and Controls
     @IBOutlet weak var tableTeams: UITableView!
     var teams: [Team] = []
     var selectedSection: Int = -1
     var previousSelectedsection: Int = -1
     
-    var myCustomerView: CustomerTableUiView = CustomerTableUiView()
-    
+    //MARK: Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
         teams = loadInitialData()
@@ -24,16 +24,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         tableTeams.registerNib(UINib(nibName: "Cell", bundle: nil ), forCellReuseIdentifier: "Cell")
         tableTeams.registerNib(UINib(nibName: "header", bundle: nil), forHeaderFooterViewReuseIdentifier: "HeaderCell")
-        
-        // Do any additional setup after loading the view, typically from a nib.
-    }
+}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
-
+    //MARK: tableViewEvents
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return teams.count
     }
@@ -48,17 +46,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as? CustomerTableUiView
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as!CustomerTableUiView
+       
         
-        if cell != nil {
-        
-        cell!.customerRole.text = teams[indexPath.section].Employees[indexPath.row].Role
-        cell!.customerName.text = teams[indexPath.section].Employees[indexPath.row].Name
-        }else
-        {
-            print("nulo")
-        }
-        return cell!
+        cell.customerRole.text = teams[indexPath.section].Employees[indexPath.row].Role
+        cell.customerName.text = teams[indexPath.section].Employees[indexPath.row].Name
+      
+        return cell
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -69,10 +63,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.nameLabel.textColor = UIColor.blueColor()
         
         if section == selectedSection {
-            cell.statusLabel.text = "Aberto"
+            cell.statusLabel.text = "Opened"
         }else
         {
-            cell.statusLabel.text = "Fechado"
+            cell.statusLabel.text = "Closed"
         }
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(_:)))
@@ -83,6 +77,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return teams[section].Name
+    }
+    
+    //MARK: Delegate
     func handleTap(sender: UITapGestureRecognizer) {
         if let selectedTag = sender.view?.tag {
             previousSelectedsection = selectedSection
@@ -91,40 +90,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let nsIndexPath2 = NSIndexSet(index: previousSelectedsection)
             
             tableTeams.beginUpdates()
-            //quando vai zabrir a primeira
-            if previousSelectedsection == -1 && selectedSection != -1 {
+            //open selected section
+            if selectedSection != -1 {
                 tableTeams.reloadSections(nsIndexPath1, withRowAnimation: UITableViewRowAnimation.Fade)
             }
             
-            //só produz o movimento quando alguma celular ja esta aberta
-            if previousSelectedsection != -1 {
-                //quando vai abrir uma abaixo da que esta aberta
-                if selectedSection > previousSelectedsection {
-                    tableTeams.reloadSections(nsIndexPath2, withRowAnimation: UITableViewRowAnimation.Fade)
-                    tableTeams.reloadSections(nsIndexPath1, withRowAnimation: UITableViewRowAnimation.Fade)
-                }
-                //quando vai abrir uma acima da que esta aberta
-                if selectedSection < previousSelectedsection {
-                    tableTeams.reloadSections(nsIndexPath1, withRowAnimation: UITableViewRowAnimation.Fade)
-                    tableTeams.reloadSections(nsIndexPath2, withRowAnimation: UITableViewRowAnimation.Fade)
-                }
+            //close previous selected section
+            if previousSelectedsection != -1
+            {
+                tableTeams.reloadSections(nsIndexPath2, withRowAnimation: UITableViewRowAnimation.Fade)
             }
             
-            //quando vai fechar a que esta aberta
-            if selectedSection == previousSelectedsection {
+            //close selected section when that's iqual previous
+            if selectedSection == previousSelectedsection
+            {
                 selectedSection = -1
                 previousSelectedsection = -1
-                tableTeams.reloadSections(nsIndexPath1, withRowAnimation: UITableViewRowAnimation.Fade)
             }
             tableTeams.endUpdates()
             
         }
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return teams[section].Name
-    }
-    
+    //MARK: LoadData
     func loadInitialData() -> [Team]
     {
         let teamJson: NSURL = [#FileReference(fileReferenceLiteral: "teams.json")#]
